@@ -1,0 +1,34 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask-sqlalchemy = "*"
+psycopg2-binary = "*"
+alembic = "*"
+flask-httpauth = "*"
+marshmallow = "*"
+marshmallow-validators = "*"
+wtforms = "*"
+email-validator = "*"
+flask = {extras = ["async"], version = "*"}
+passlib = "*"
+asyncpg = "*"
+geopy = "*"
+requests = "*"
+geoalchemy2 = "*"
+pandas = "*"
+celery = "5.2.3"
+redis = "4.1.0"
+limits = "*"
+aiohttp = "*"
+aioredis = "*"
+kombu= "==5.2.2"
+coredis= "*"
+aio_pika= "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

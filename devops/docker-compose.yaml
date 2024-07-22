@@ -1,0 +1,86 @@
+version: "3.7"
+services:
+
+#ifrastructure
+  postgres:
+    image: "postgres:12"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: TicTacToe
+    ports:
+      - "6432:5432"
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  app:
+    image: "app-v0.1:latest"
+    build:
+      context: ../
+      dockerfile: ./devops/images/Dockerfile
+#    entrypoint: sleep 100d
+    restart: on-failure
+    environment:
+      WEB_SERVER_AUTO_RELOAD: "False"
+      DEBUG: "True"
+      PG_DB: set-value-here
+      PG_USER: set-value-here
+      PG_PASSWORD: set-value-here
+      PG_HOST: postgres
+      LOCAL: "True"
+      IN_COMPOSE: "True"
+    volumes:
+      - type: bind
+        source:  ./src
+        target: /src/src
+    depends_on:
+      - postgres
+
+  async_app:
+    image: "app-v0.1:latest"
+    build:
+      context: ../
+      dockerfile: ./devops/images/Dockerfile_async_worker
+#    entrypoint: sleep 100d
+    restart: on-failure
+    environment:
+      WEB_SERVER_AUTO_RELOAD: "False"
+      DEBUG: "True"
+      PG_DB: set-value-here
+      PG_USER: set-value-here
+      PG_PASSWORD: set-value-here
+      PG_HOST: postgres
+      LOCAL: "True"
+      IN_COMPOSE: "True"
+    volumes:
+      - type: bind
+        source:  ./src
+        target: /src/src
+    depends_on:
+      - postgres
+
+
+  redis:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - 6379:6379
+#    volumes:
+#      - redis_data:/data
+    restart: on-failure
+
+#deployments
+
+#jobs
+
+
+volumes:
+  pg-data:
+    driver: local
+  localstack-dir:
+    driver: local
